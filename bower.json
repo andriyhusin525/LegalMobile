@@ -1,0 +1,39 @@
+{
+  "name": "Legalmobile",
+  "version": "0.0.22",
+  "author": [
+    "Krishna Rokhale <krishna@bitbakery.io>"
+  ],
+  "description": "The Mobile App",
+  "license": "MIT",
+  "private": "true",
+  "devDependencies": {
+    "ionic": "driftyco/ionic-bower#v1.1.0"
+  },
+  "resolutions": {
+    "angular": "1.4.3",
+    "moment": ">=2.8.0 <2.11.0"
+  },
+  "dependencies": {
+    "ngCordova": "latest",
+    "lodash": "latest",
+    "angular-animate": "latest",
+    "angular-sanitize": "latest",
+    "angular-ui-router": "latest",
+    "angular-cookies": "^1.4.0",
+    "angular-messages": "~1.4.8",
+    "angular-resource": "^1.4.0",
+    "angular-translate": "latest",
+    "angular-translate-loader-static-files": "latest",
+    "angular-translate-storage-cookie": "latest",
+    "angular-translate-storage-local": "latest",
+    "ng-token-auth": "~0.0.28",
+    "ionic-ratings": "^0.2.0",
+    "moment": "^2.11.2",
+    "angular-moment": "^0.10.3",
+    "angular-scroll-glue": "^2.0.6",
+    "angular-socket-io": "^0.7.0",
+    "angular-filter": "^0.5.11",
+    "angular-filepicker": "1.1.2"
+  }
+}

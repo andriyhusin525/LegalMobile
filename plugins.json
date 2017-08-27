@@ -1,0 +1,14 @@
+[
+"com.ionic.keyboard",
+"com.paypal.cordova.mobilesdk",
+"cordova-plugin-console",
+"cordova-plugin-device",
+"cordova-plugin-splashscreen",
+"cordova-plugin-statusbar",
+"cordova-plugin-whitelist",
+"cordova-plugin-file-transfer",
+"nl.x-services.plugins.socialsharing",
+"org.apache.cordova.inappbrowser",
+"cordova-plugin-file",
+"com.megster.cordova.FileChooser"
+]

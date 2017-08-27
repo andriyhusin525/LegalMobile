@@ -1,0 +1,94 @@
+<ion-view hide-back-button="true" align-title="center">
+  <ion-nav-title>
+    My Account
+  </ion-nav-title>
+  <ion-content class="has-header">
+    <form name="accountForm" novalidate="novalidate">
+      <div class="padding">
+        <label>
+          <input id="firstName" name="firstName" type="text" placeholder="First Name" ng-model="new_user.first_name" ng-maxlength="64" required="required">
+        </label>
+        <div ng-messages="accountForm.firstName.$dirty && accountForm.firstName.$error">
+          <div class="padding info" ng-message="required">First Name cant be blank</div>
+          <div class="padding info" ng-message="maxlength">First Name cant be so long</div>
+        </div>
+
+      <label>
+        <input id="lastName" name="lastName" type="text" placeholder="Last Name" ng-model="new_user.last_name" ng-maxlength="30" required="required">
+      </label>
+      <div ng-messages="accountForm.lastName.$dirty && accountForm.lastName.$error">
+        <div class="padding info" ng-message="required">First Name cant be blank</div>
+        <div class="padding info" ng-message="maxlength">Last Name cant be so long</div>
+      </div>
+
+      <label>
+        <input id="phones" name="phones" type="tel" placeholder="Phone" ng-model="new_user.phones" ng-minlength="5" ng-maxlength="30" required="required">
+      </label>
+      <div ng-messages="accountForm.phones.$dirty && accountForm.phones.$error">
+        <div class="padding info" ng-message="required">Phone cant be blank</div>
+        <div class="padding info" ng-message="maxlength">Phone cant be so long</div>
+      </div>
+
+      <label>
+        <input id="officePhone" name="officePhone" type="tel" placeholder="Office Phone" ng-model="new_user.office_phone">
+      </label>
+      <div ng-messages="accountForm.officePhone.$dirty && accountForm.officePhone.$error">
+        <div class="padding info" ng-message="required">Phone cant be blank</div>
+        <div class="padding info" ng-message="maxlength">Phone cant be so long</div>
+      </div>
+
+      <label>
+        <input id="fax" name="fax" type="tel" placeholder="Fax Number" ng-model="new_user.fax">
+      </label>
+      <div ng-messages="accountForm.fax.$dirty && accountForm.fax.$error">
+        <div class="padding info" ng-message="required">Phone cant be blank</div>
+        <div class="padding info" ng-message="maxlength">Phone cant be so long</div>
+      </div>
+
+       <label>
+        <input id="email" name="email" type="email" placeholder="Email" ng-model="new_user.email" ng-minlength="5" ng-maxlength="30" required="required" disabled='disabled'>
+      </label>
+      <div ng-messages="accountForm.email.$dirty && accountForm.email.$error">
+        <div class="padding info" ng-message="required">Email cant be blank</div>
+        <div class="padding info" ng-message="email">Invalid email address</div>
+      </div>
+
+      <div ng-show='user.roles[0].name == "realtor" || user.roles[0].name == "mortgage_agent"'>
+        <label>
+          <input id="brokerageName" name="brokerageName" type="text" placeholder="Brokerage Name"
+                 ng-model="new_user.user_profile.brokerage_name" required="required">
+        </label>
+
+        <div ng-messages="accountForm.brokerageName.$dirty && accountForm.brokerageName.$error">
+          <div class="padding info" ng-message="required">Please enter Brokerage Name</div>
+        </div>
+
+        <label>
+          <input id="brokerageAddress" name="brokerageAddress" type="text" placeholder="Brokerage Address" ng-model="new_user.user_profile.brokerage_address" required="required">
+        </label>
+        <div ng-messages="accountForm.brokerageAddress.$dirty && accountForm.brokerageAddress.$error">
+          <div class="padding info" ng-message="required">Phone enter brokerage address</div>
+        </div>
+
+        <label>
+          <input id="brokeragePhoneNumber" name="brokeragePhoneNumber" type="tel" placeholder="Brokerage Phone Number" ng-model="new_user.user_profile.brokerage_phone_number" required="required" maxlength="10" minlength="10" >
+        </label>
+        <div ng-messages="accountForm.brokeragePhoneNumber.$dirty && accountForm.brokeragePhoneNumber.$error">
+          <div class="padding info" ng-message="required">Phone enter valid phone number</div>
+        </div>
+
+        <label>
+          <input id="brokerageFax" name="brokerageFax" type="tel" placeholder="Brokerage Fax" ng-model="new_user.user_profile.brokerage_fax">
+        </label>
+      </div>
+
+    </div>
+    
+    <div class="padding">
+      <a class="item text-center social-btn-avionic" ui-sref-active="active" ng-click="handleUpdateAccountBtnClick(accountForm.$valid)">
+        Update
+      </a>
+    </div>
+  </form>
+</ion-content>
+</ion-view>

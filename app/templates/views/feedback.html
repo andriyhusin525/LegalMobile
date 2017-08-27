@@ -1,0 +1,25 @@
+<ion-view hide-back-button="true" align-title="center">
+  <ion-nav-title>
+    Feedback
+  </ion-nav-title>
+  <ion-content class="has-header">
+    <form name="feedbackForm" novalidate="novalidate">
+      <span ng-show='formErrors'>Please provide rating and feedback</span>
+      <div class="padding">
+        <div>
+          <ionic-ratings ratingsobj='ratingsObject'></ionic-ratings>
+        </div>
+        <label>
+          <textarea id="summary" name="summary" type="text" placeholder="Tell us more about your experience" ng-model="feedback.summary">
+          </textarea>
+        </label>
+      </div>
+    
+      <div class="padding">
+        <a class="item text-center social-btn-avionic" ui-sref-active="active" ng-click="submitFeedback()">
+          Send feedback
+        </a>
+      </div>
+    </form>
+  </ion-content>
+</ion-view>

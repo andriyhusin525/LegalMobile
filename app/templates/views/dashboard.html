@@ -1,0 +1,55 @@
+<ion-view hide-back-button="true" cache-view="false">
+  <ion-nav-title>
+      Deals
+  </ion-nav-title>
+  
+	 <ion-nav-buttons side="left">
+       <button menu-toggle="left" class="button button-icon icon ion-android-menu flat"></button>
+    </ion-nav-buttons>
+    <ion-nav-buttons side="right">
+       <a class="button button-icon ion-plus-round flat" ui-sref="app.new_deal"></a>
+    </ion-nav-buttons>
+    <div class="bar bar-subheader item-input-inset" style="border-top: ;padding: 15px;border-bottom:5px solid #547A2A">
+      <label class="item-input-wrapper" style="padding: 0;margin: 0;">
+        <input ng-model='query' type="search" placeholder="Search" style="text-align: center;background: #fff;">
+      </label>
+      <button class="button button-clear" ng-click="searchDeals(query)" style='padding: 0;margin: 0;'>
+        <i class="icon ion-ios-search placeholder-icon" style="color:#fff"></i>
+      </button>
+    </div>
+
+  <ion-content class="has-header has-subheader">
+    <div class="list" ng-show='!searchResult'>
+      <label class="item item-input item-select" style="border-bottom: 1px solid #eee;background: #eee;">
+        <div class="input-label" style="color:#547A2A">
+          DEALS
+        </div>
+        <select style="background: none;border:none;color:#547A2A" ng-model='selectedStageId' ng-change="changeStage(selectedStageId)" ng-options='stage.id as stage.name for stage in stages' >
+        </select>
+      </label>
+    </div>
+
+  	<ion-list class='list legal-app-light list-inset'>
+      <ion-item ng-repeat="deal in deals" deal="deal" href="#/app/deal/{{deal.id}}" class='item' style="margin-bottom:10px;border-bottom:1px solid #eee">
+		    <p># {{deal.deal_number}} </p>
+		    <strong>{{deal.street_num}} {{deal.street_name}}</strong>
+      </ion-item>
+      <ion-item class='item' style="margin-bottom:30px;border-bottom:1px solid #eee" ng-show="displayNoMoreData">
+        <h2 class="legal-app-light text-center" style="color: #888;">No more Deals to show</h2>
+      </ion-item>
+      <ion-item class='item' style="margin-bottom:30px;border-bottom:1px solid #eee" ng-show="noDealsFound">
+        <h2 class="legal-app-light text-center" style="color: #888;">
+          No matching Deals were found
+        </h2>
+      </ion-item>
+      <ion-item class='item' style="margin-bottom:30px;border-bottom:1px solid #eee"  ng-show='searchResult' >
+        <h2 class="legal-app-light text-center">
+          <a href="#", ng-click='resetSearch()' style="color:#009688"> Go Back</a>
+        </h2>
+      </ion-item>
+	  </ion-list>
+
+	<ion-infinite-scroll on-infinite="loadMore()" distance= '5%' ng-if="!noMoreData" icon="ion-loading-c">
+	</ion-infinite-scroll>
+  </ion-content>
+</ion-view>

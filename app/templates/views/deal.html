@@ -1,0 +1,424 @@
+<ion-view>
+  <ion-nav-title>
+    Deal
+  </ion-nav-title>
+  <ion-nav-buttons side="right">
+    <div class="button button-icon ion-chatboxes flat" ng-click='checkConvoStatus()' ng-show='ensureNonLegalFirmUser(user)'></div>
+  </ion-nav-buttons>
+  <ion-content class="has-header">
+    <div class="list legal-app-light">
+      <div class="item" style="border-bottom: 1px solid #eee;">
+        <p>
+          # {{deal.deal_number}}
+          <button class="button-small button-outline button right" ng-click='editDealNumber()' style="border:none", ng-show='ensureUpdateDealsAccess(user) && (deal.deal_number == null || deal.deal_number == "")'>
+              <i class="icon ion-plus-round"></i>
+          </button>
+        </p>
+        <div ng-show='showDealNumberForm'>
+          <form name='dealNumberForm'>
+            <input name= 'dealNumber', type='text', placeholder='Deal number', ng-pattern="dealNumberPattern", ng-model="deal.deal_number", autocomplete="off" style='border:none;', ng-blur='ensureDealNumber(dealNumberForm.dealNumber.$valid)'>
+            <button ng-click="resetSelection()">cancel</button>
+            <button ng-click='updateDeal(dealNumberForm.$valid)'>update</button>
+          </form>
+          <small class='text-danger' ng-show='numberNotAvailable'>
+            <i class='ion-minus-circled'>&nbsp;</i>
+            Deal number taken
+          </small>
+          <small class='text-primary' ng-show='numberAvailable'>
+            <i class='ion-checkmark-round'> &nbsp;</i>
+            Deal number available
+          </small>
+          <p>Deal number should start with 2 digits, followed by [P, S, R, M or T] and '-' then followed by 4 digits eg: 99S-1111</p>
+        </div>
+        <div ng-messages="dealForm.dealNumber.$dirty && dealForm.dealNumber.$error">
+          <div class="padding info" ng-message="pattern">Please Enter valid deal number.</div>
+        </div>
+        <h2>
+          {{deal.street_num}} {{deal.street_name}}
+          <button class="button-small button-outline button right" ng-click='editAddress()' style="border:none" ng-show='ensureUpdateDealsAccess(user)'>
+            <i class="icon ion-edit"></i>
+          </button>
+        </h2>
+        <form ng-show='showAddressForm', name='dealAddressForm'>
+          <input name= 'propertyAddress', type='text', placeholder='Property Address', ng-required="true", ng-model="deal.property_address", autocomplete="off" style='border:none;'>
+          <button ng-click="resetSelection()">cancel</button>
+          <button ng-click='updateDeal(dealAddressForm.$valid)'>update</button>
+        </form> 
+        <div class="row">
+            <div class="col">
+              <h3 style="color:#547A2A">STATUS : </h3>
+            </div>
+            <div class='col' ng-show='!ensureUpdateDealsAccess(user)'>{{_.findWhere(stages, {id: deal.stage_id}).name}}</div>
+            <div  class='col'>
+              <select style="background: none;border:none;color:#547A2A" , ng-model='deal.stage_id' , ng-if='ensureUpdateDealsAccess(user)' , ng-change='showUpdateStatus()', ng-options='stage.id as stage.name for stage in stages'>
+              </select>
+            </div>
+             <div class='col' ng-if='ensureUpdateDealsAccess(user)' ng-show="updateStatus">
+              <button class=" button button-outline" style="border:none" ng-click="updateDeal(true)">Update</button>
+            </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <h3 style="color:#547A2A">Property type : </h3>
+          </div>
+          <div class="col">
+            <p ng-if='!ensureUpdateDealsAccess(user)'>{{deal.property_type}}</p>
+            <select style="background: none;border:none;color:#547A2A" , ng-model='deal.property_type' , ng-if='ensureUpdateDealsAccess(user)' , ng-change='showUpdatepropType()'>
+              <option value='Investment'>Investment</option>
+              <option value='Matrimonial Home'>Matrimonial Home</option>
+            </select>
+          </div>
+          <div class='col' ng-if='ensureUpdateDealsAccess(user)' ng-show="updatePropType">
+            <button class=" button button-outline" style="border:none" ng-click="updateDeal(true)">Update</button>
+          </div>
+        </div>
+
+        <div class="row" ng-show='deal.closing_date'>
+            <div class="col">
+              <h3>CLOSING DATE : </h3>
+            </div>
+            <div class='col'><h3>{{deal.closing_date |  date:'MM/dd/yyyy' }}</h3></div>
+        </div>
+        <div class="row" ng-show='deal.deal_type == "purchase" && deal.title_search_date'>
+            <div class="col">
+              <h3>TITLE SEARCH DATE : </h3>
+            </div>
+            <div class='col'><h3>{{deal.title_search_date |  date:'MM/dd/yyyy' }}</h3></div>
+        </div>
+      </div>
+
+      <div class="item-body">
+        <div class="item item-divider">
+          <h3>
+            <i class="icon ion-person"></i>
+            CLIENT
+            <button class="button button-small button-outline right" ng-click="showNewClientForm()"
+                    ng-show='ensureUpdateDealsAccess(user)' style="border:none">
+              <i class="icon" ng-class="deal.client ? 'ion-edit' : 'ion-plus-round'"></i>
+            </button>
+          </h3>
+        </div>
+
+        <div class="item item-text-wrap" style="margin-bottom: 3%">
+          <div ng-repeat='client in deal.clients'>
+            <p>{{ client.first_name }} {{ client.last_name }}</p>
+          </div>
+        </div>
+
+        <div class="item item-divider">
+          <h3>
+            <i class="icon ion-flag"></i>
+            STAKEHOLDERS
+          </h3>
+        </div>
+        <div class="item item-text-wrap">
+          <p>
+            <strong>Realtor : </strong>
+            {{ deal.realtor.first_name }} {{ deal.realtor.last_name }}
+            <button class="button-small button-outline button right" ng-click="showNewRealtorForm()"
+                    ng-show='ensureUpdateDealsAccess(user)' style="border:none">
+              <i class="icon" ng-class="deal.realtor ? 'ion-edit' : 'ion-plus-round'"></i>
+            </button>
+          </p>
+        </div>
+        <div class="item item-text-wrap" ng-show='deal.deal_type != "sale"'>
+          <p>
+            <strong>Mortgage Agent : </strong>
+            {{ deal.mortgage_agent.first_name }} {{ deal.mortgage_agent.last_name }}
+            <button class=" button-small button-outline button right" ng-click="showNewMortgageAgentForm()" ng-show='ensureUpdateDealsAccess(user)' style="border:none">
+              <i class="icon" ng-class="deal.mortgage_agent ? 'ion-edit' : 'ion-plus-round'"></i>
+            </button>
+          </p>
+        </div>
+        <div class="item item-text-wrap">
+          <p>
+            <strong>Law Firm Rep : </strong>
+            <div ng-repeat='legal_firm in deal.legal_firms'>
+              {{legal_firm.first_name}} {{legal_firm.last_name}}
+            </div>
+          </p>
+        </div>
+        <div class="item item-text-wrap">
+          <p>
+            <strong>Other party Law Firm Rep : </strong>
+            {{deal.opl_first_name}} {{deal.opl_last_name}}
+          </p>
+        </div>
+
+        <div class="" ng-show='ensureLegalFirmUser(user)'>
+          <div class="item item-divider" style="margin-top: 3%">
+            <h3>
+              <i class="icon ion-clipboard"></i>
+              TASKS
+            </h3>
+          </div>
+          <div class="item item-text-wrap" ng-repeat='(stage_id, checklists) in deal.checklists | groupBy: "task.stage_id"'>
+          <div class="item item-divider" style="margin-top: 3%">
+            <h3>
+              <i class="icon ion-clipboard"></i>
+              {{displayStageName(stage_id)}}
+            </h3>
+          </div>
+          <div class="row" ng-repeat='checklist in checklists'>
+            <div class="col">
+              <ion-checkbox ng-change="updateTaskStatus(checklist)" ng-model='checklist.completed' style='border:none;'>
+                {{checklist.task.name}}
+              </ion-checkbox>
+            </div>
+          </div>
+        </div>
+      </div>
+
+        <div class="item item-divider" style="margin-top: 3%">
+          <h3>
+            <i class="icon ion-paperclip"></i>
+            DOCUMENTS
+            <button class="button-small button-outline button right" ng-click="showNewDocumentForm()" style="border:none">
+                <i class="icon ion-plus-round"></i>
+            </button>
+          </h3>
+        </div>
+        <div class="item item-text-wrap" ng-repeat="document in deal.documents" ng-show='ensureDocumentViewAccess(document)'>
+          <a ng-click="downloadFile(document.file_url)" href=''>{{document.document_type.name}}</a>
+          <button class="button-small button-outline button right" ng-click='downloadFile(document.file_url)' style="border:none;margin-left: 10px;">
+            <i class="icon ion-android-download"></i>
+          </button>
+          <button class="button-small button-outline button right" ng-click='handleDeleteDocument(document.id)' style="border:none">
+            <i class="icon ion-trash-a"></i>
+          </button>
+        </div>
+        <form ng-show='newDocumentForm' name="newDocForm">
+          <div class="row">
+            <select id="documentType" name="documentType" ng-model="new_file.document_type_id" required='required' ng-options='type.id as type.name for type in docTypes'>
+            </select>
+          </div>
+          
+          <div class="row">
+            <div class="col col-80">
+              <input filepicker type="filepicker" data-fp-container="modal" data-fp-mimetypes="*/*" on-success="onUpload(event.fpfile)" />
+              <p>{{new_file.filename}}</p>
+            </div>
+            <div class="col col-20">
+              <button class="button button-outline button-small" style="border:none" ng-click="uploadDocument(newDocForm.$valid)">Add</button>
+            </div>
+          </div>
+        </form>
+
+        <div class="item item-divider" style="margin-top: 3%">
+          <h3>
+            <i class="icon ion-clipboard"></i>
+            COMMENTS
+            <button class="button-small button-outline button right" ng-click="showNewCommentForm()" style="border:none">
+              <i class="icon ion-plus-round"></i>
+            </button>
+          </h3>
+        </div>
+          <div class="item item-text-wrap" ng-repeat="comment in deal.comments">
+          <div class="row">
+            <div class="col col-80">
+              <p><strong>{{comment.user.first_name}} : </strong></p>
+              <p>{{comment.body}}</p>
+            </div>
+            <div>
+              <span>{{comment.created_at | date:"MM/dd/yyyy 'at' h:mma"}}</span>
+            </div>
+          </div>
+          <form ng-show='selectedCommentId == comment.id'>
+            <input name= 'commentBody', type='text', placeholder='Comment', ng-required="true", ng-model="selectedComment.body", autocomplete="off" style='border:none;'>
+            <button ng-click="resetSelection()">cancel</button>
+            <button ng-click='updateComment()'>update</button>
+          </form>  
+        </div>
+        <div class="list" ng-show='newCommentForm'>
+          <div class="item item-input-inset">
+            <label class="item-input-wrapper">
+              <input type="text" placeholder="Comment" ng-model='comment.body'>
+            </label>
+            <button class="button button-small" ng-click='addComment()'>
+              Add
+            </button>
+          </div>
+        </div>
+      </div>
+
+
+        <div class="item item-divider" style="margin-top: 3%">
+          <h3>
+            <i class="icon ion-chatbubble-working"></i>
+            ACTIVITY
+          </h3>
+        </div>
+        <div class="item item-text-wrap" ng-repeat="activity in deal.activities" ng-show='ensureActivityAccess(activity)'>
+          <p style="text-transform: uppercase;">{{getActivityMessage(activity)}} on {{activity.created_at |
+            date:"MM/dd/yyyy 'at' h:mma"}} by {{activity.owner.first_name}} {{activity.owner.last_name}}</p>
+        </div>
+
+      </div>
+    </div>
+  </ion-content>
+</ion-view>
+<script id="stackHolder.html" type="text/ng-template">
+  <ion-modal-view>
+    <ion-header-bar>
+      <h1 class="title">{{new_user_details.user_form_type}} Info</h1>
+      <button class="button right" ng-click="closeModal()">
+        <i class="icon ion-close"></i>
+      </button>
+    </ion-header-bar>
+    <ion-content>
+      <form name="newClientForm" novalidate="novalidate">
+        <div class="padding">
+          <label>
+            <input id="first_name" name="firstName" type="text" placeholder="first name"
+                   ng-model="new_user_details.first_name" ng-maxlength="64" required="required">
+          </label>
+
+          <div ng-messages="newClientForm.firstName.$dirty && newClientForm.firstName.$error">
+            <div class="padding info" ng-message="required">First Name cant be blank</div>
+          </div>
+
+          <label>
+            <input id="last_name" name="lastName" type="text" placeholder="last name"
+                   ng-model="new_user_details.last_name" ng-maxlength="64" required="required">
+          </label>
+
+          <div ng-messages="newClientForm.lastName.$dirty && newClientForm.lastName.$error">
+            <div class="padding info" ng-message="required">Last Name cant be blank</div>
+          </div>
+
+          <label>
+            <input id="brokerageName" name="brokerageName" type="text" placeholder="Brokerage Name"
+                   ng-model="new_user_details.user_profile.brokerage_name" required="required">
+          </label>
+
+          <div ng-messages="newClientForm.brokerageName.$dirty && newClientForm.brokerageName.$error">
+            <div class="padding info" ng-message="required">Please enter Brokerage Name</div>
+          </div>
+
+          <label>
+            <input id="brokerageAddress" name="brokerageAddress" type="text" placeholder="Brokerage Address" ng-model="new_user_details.user_profile.brokerage_address" required="required">
+          </label>
+          <div ng-messages="newClientForm.brokerageAddress.$dirty && newClientForm.brokerageAddress.$error">
+            <div class="padding info" ng-message="required">Phone enter brokerage address</div>
+          </div>
+
+          <label>
+            <input id="brokeragePhoneNumber" name="brokeragePhoneNumber" type="tel" placeholder="Brokerage Phone Number" ng-model="new_user_details.user_profile.brokerage_phone_number" required="required" maxlength="10" minlength="10" >
+          </label>
+          <div ng-messages="newClientForm.brokeragePhoneNumber.$dirty && newClientForm.brokeragePhoneNumber.$error">
+            <div class="padding info" ng-message="required">Phone enter valid phone number</div>
+          </div>
+
+          <label>
+            <input id="brokerageFax" name="brokerageFax" type="tel" placeholder="Brokerage Fax" ng-model="new_user_details.user_profile.brokerage_fax">
+          </label>
+
+          <label>
+            <input id="email" name="email" type="email" placeholder="Email" ng-model="new_user_details.email"
+                   ng-minlength="5" ng-maxlength="64" required="required">
+          </label>
+          <div ng-messages="newClientForm.email.$dirty && newClientForm.email.$error">
+            <div class="padding info" ng-message="required">Email cant be blank</div>
+            <div class="padding info" ng-message="email">Invalid email address</div>
+          </div>
+        </div>
+        <div class="padding">
+          <a class="item text-center social-btn-avionic" ui-sref-active="active"
+             ng-click="handleEditUserBtnClick(newClientForm.$valid)">
+            Update {{displayUserType(new_user_details.user_form_type)}} Info
+          </a>
+        </div>
+      </form>
+    </ion-content>
+  </ion-modal-view>
+</script>
+
+<script id="newConvo.html" type="text/ng-template">
+  <ion-modal-view>
+    <ion-header-bar>
+      <h1 class="title">Start a new Enquiry</h1>
+      <button class="button right" ng-click="closeModal()">
+        <i class="icon ion-close"></i>
+      </button>
+    </ion-header-bar>
+    <ion-content>
+      <label class="text-center">To: Abi Singam Law Professional Corporation</label>
+      <form name="newConvoForm" novalidate="novalidate">
+        <div class="padding">
+          <label>
+            <textarea id="message" name="firstName" type="text" placeholder="Message"
+                   ng-model="message.body" required="required">
+            </textarea>
+          </label>
+        </div>
+        <div class="padding">
+          <a class="item text-center social-btn-avionic" ui-sref-active="active"
+             ng-click="startNewConvo(message)">
+             Send
+          </a>
+        </div>
+      </form>
+    </ion-content>
+  </ion-modal-view>
+</script>
+
+
+
+<script id="newClient.html" type="text/ng-template">
+  <ion-modal-view>
+    <ion-header-bar>
+      <h1 class="title">{{new_user_details.user_form_type}} Info</h1>
+      <button class="button right" ng-click="closeModal()">
+        <i class="icon ion-close"></i>
+      </button>
+    </ion-header-bar>
+    <ion-content>
+      <form name="newClientForm" novalidate="novalidate">
+        <div class="padding">
+          <label>
+            <input id="first_name" name="firstName" type="text" placeholder="first name"
+                   ng-model="new_user_details.first_name" ng-maxlength="64" required="required">
+          </label>
+
+          <div ng-messages="newClientForm.firstName.$dirty && newClientForm.firstName.$error">
+            <div class="padding info" ng-message="required">First Name cant be blank</div>
+          </div>
+
+          <label>
+            <input id="last_name" name="lastName" type="text" placeholder="last name"
+                   ng-model="new_user_details.last_name" ng-maxlength="64" required="required">
+          </label>
+
+          <div ng-messages="newClientForm.lastName.$dirty && newClientForm.lastName.$error">
+            <div class="padding info" ng-message="required">Last Name cant be blank</div>
+          </div>
+
+          <label>
+            <input id="phones" name="phones" type="tel" placeholder="phone" ng-model="new_user_details.phones"
+                   ng-maxlength="10" ng-maxlength="10" required="required">
+          </label>
+
+          <div ng-messages="newClientForm.phones.$dirty && newClientForm.phones.$error">
+            <div class="padding info" ng-message="required">Phone number cant be blank</div>
+          </div>
+          <label>
+            <input id="email" name="email" type="email" placeholder="Email" ng-model="new_user_details.email"
+                   ng-minlength="5" ng-maxlength="64" required="required">
+          </label>
+
+          <div ng-messages="newClientForm.email.$dirty && newClientForm.email.$error">
+            <div class="padding info" ng-message="required">Email cant be blank</div>
+            <div class="padding info" ng-message="email">Invalid email address</div>
+          </div>
+        </div>
+        <div class="padding">
+          <a class="item text-center social-btn-avionic" ui-sref-active="active"
+             ng-click="AddNewClient(newClientForm.$valid)">
+            Update {{displayUserType(new_user_details.user_form_type)}} Info
+          </a>
+        </div>
+      </form>
+    </ion-content>
+  </ion-modal-view>
+</script>

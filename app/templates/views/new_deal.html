@@ -1,0 +1,138 @@
+<ion-view>
+  <ion-nav-title>
+      New Deal
+  </ion-nav-title>
+  <ion-content class="has-header">
+    <form name="dealForm" novalidate="novalidate">
+      <div class="padding">
+        <div ng-show='ensureLegalFirmUser(user)'>
+          <label>
+            <input id="dealNumber", name="dealNumber", type="text", placeholder="Deal Number", ng-model="deal.deal_number", ng-pattern='dealNumberPattern', ng-blur='ensureDealNumber(dealForm.dealNumber.$valid)' , autocomplete='off'>
+          </label>
+          <small class='text-danger' ng-show='numberNotAvailable'>
+            <i class='ion-minus-circled'>&nbsp;</i>
+            Deal number taken
+          </small>
+          <small class='text-primary' ng-show='numberAvailable'>
+            <i class='ion-checkmark-round'> &nbsp;</i>
+            Deal number available
+          </small>
+          <p>Deal number should start with 2 digits, followed by [P, S, R, M or T] and '-' then followed by 4 digits eg: 99S-1111</p>
+          <div ng-messages="dealForm.dealNumber.$dirty && dealForm.dealNumber.$error">
+            <div class="padding info" ng-message="pattern">Please Enter valid deal number.</div>
+          </div>
+        </div>
+
+        <label>
+          <input id="property_address" name="propertyAddress" type="text" placeholder="Property address" ng-model="deal.property_address" ng-maxlength="64" required="required">
+        </label>
+        <div ng-messages="dealForm.propertyAddress.$dirty && dealForm.propertyAddress.$error">
+          <div class="padding info" ng-message="required">Property address cant be blank</div>
+        </div>
+
+        <div class="item-divider legal-app-light">
+          <label style="color:#547A2A !important">
+            Client Information
+          </label>
+          <label>
+            <input id="firstName" name="firstName" type="text" placeholder="First Name" ng-model="deal.first_name" ng-maxlength="64" required="required">
+          </label>
+          <div ng-messages="dealForm.firstName.$dirty && dealForm.firstName.$error">
+            <div class="padding info" ng-message="required">First Name cant be blank</div>
+          </div>
+          <label>
+            <input id="lastName" name="lastName" type="text" placeholder="Last Name" ng-model="deal.last_name" ng-maxlength="30" required="required">
+          </label>
+          <div ng-messages="dealForm.lastName.$dirty && dealForm.lastName.$error">
+            <div class="padding info" ng-message="required">Last Name cant be blank</div>
+          </div>
+          <label>
+            <input id="phones" name="phones" type="tel" placeholder="Phone" ng-model="deal.phones" minlength='10' maxlength="10" required="required">
+          </label>
+          <div ng-messages="dealForm.phones.$dirty && dealForm.phones.$error">
+            <div class="padding info" ng-message="required">Phone cant be blank</div>
+            <div class="padding info" ng-message="minlength, maxlength">Phone number should have 10 digits</div>
+          </div>
+          <label>
+            <input id="email" name="email" type="email" placeholder="Email" ng-model="deal.email" ng-minlength="5" ng-maxlength="30" required="required">
+          </label>
+          <div ng-messages="dealForm.email.$dirty && dealForm.email.$error">
+            <div class="padding info" ng-message="required">Email cant be blank</div>
+            <div class="padding info" ng-message="email">Invalid Email Address</div>
+          </div>
+          <label>
+            <select id="property_type" name="propertyType" type="text" ng-model="deal.property_type" >
+              <option value='Investment'>Investment</option>
+              <option value='Matrimonial Home'>Matrimonial Home</option>
+            </select>
+          </label>
+          <div ng-messages="dealForm.email.$dirty && dealForm.email.$error">
+            <div class="padding info" ng-message="required">Email cant be blank</div>
+            <div class="padding info" ng-message="email">Invalid Email Address</div>
+          </div>
+        </div>
+
+        <label>
+          <select id="dealType" name="dealType"  ng-model="deal.deal_type_id" required="required" ng-options='type.id as type.name for type in dealTypes'>
+          </select>
+        </label>
+        <div ng-messages="dealForm.dealType.$dirty && dealForm.dealType.$error">
+          <div class="padding info" ng-message="required">Select a Deal type</div>
+        </div>
+
+        <div class="row">
+          <input filepicker type="filepicker" data-fp-container="modal" data-fp-mimetypes="*/*" on-success="onUpload(event.fpfile)" />
+        </div>
+        <div class="row">
+          <p>{{deal.filename}}</p>
+        </div>        
+        
+        <label>
+          <select id="documentType" name="documentType"  ng-model="deal.document_type_id" ng-disabled='deal.file_url == null ? true : false' ng-required='deal.file_url == null ? false : true' ng-options='type.id as type.name for type in docTypes'>
+          </select>
+        </label>
+
+        <ion-checkbox class="legal-app-light" ng-model="deal.urgent">Urgent Deal</ion-checkbox>
+
+        <label>
+          <label style="color:#547A2A !important">
+            Closing Date
+          </label>
+          <input id="closingDate" name="closingDate" type="date" ng-model="deal.closing_date" >
+        </label>
+
+        <label ng-show='_.findWhere(dealTypes, {id: deal.deal_type_id}).name == "Purchase"'>
+          <label style="color:#547A2A !important">
+            Title Search Date
+          </label>
+          <input id="titleSearchDate" name="titleSearchDate" type="date" ng-model="deal.title_search_date" >
+        </label>
+        <label>
+          <input id="otherLawFirstName" name="otherLawFirstName" type="text" placeholder="Other party Law firm First Name" ng-model="deal.opl_first_name">
+        </label>
+        <label>
+          <input id="otherLawLastName" name="otherLawLastName" type="text" placeholder="Other party Law firm Last Name" ng-model="deal.opl_last_name" >
+        </label>
+        <label>
+          <input id="otherLawPhones" name="otherLawPhones" type="tel" placeholder="Other party Law firm Phone" ng-model="deal.opl_phones" >
+        </label>
+        <label>
+          <input id="otherLawFax" name="otherLawFax" type="tel" placeholder="Other party Law firm Fax" ng-model="deal.opl_fax" >
+        </label>
+        <label>
+          <input id="otherLawEmail" name="otherLawEmail" type="email" placeholder="Other Party Law firm Email" ng-model="deal.opl_email" >
+        </label>
+        <label>
+          <textarea id="otherLawAddress" name="otherLawAddress" type="text" placeholder="Other party Law firm Address" ng-model="deal.opl_address" ></textarea> 
+        </label>
+
+      </div>
+
+      <div class="padding">
+        <a class="item text-center social-btn-avionic" ui-sref-active="active" ng-click="handleCreateDealBtnClick(dealForm.$valid)">
+          Add Deal
+        </a>
+      </div>
+    </form>
+  </ion-content>
+</ion-view>

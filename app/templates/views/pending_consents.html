@@ -1,0 +1,39 @@
+<ion-view hide-back-button="true" cache-view="false">
+  <ion-nav-title>
+      Pending Requests
+  </ion-nav-title>
+  <ion-content>
+      <div class="list card legal-app-light", ng-repeat='consent in consents'>
+        <div class="item">
+          <p><strong>{{consent.user.first_name}} {{consent.user.last_name}}</strong> is added as a <strong>{{consent.user_type}}</strong></p>
+          <p> to <strong>{{consent.deal.street_num}} {{consent.deal.street_name}}</strong> deal.</p>
+        </div>
+        <div class="row">
+          <div class="col-50">
+            <div class="item item-icon-left assertive" ng-click='allowAccess(consent)'>
+              <i class="icon ion-checkmark" style="color:#547A2A"></i>
+              <p style="color:#547A2A">Allow</p>
+            </div>    
+          </div>
+          <div class="col-50">
+            <div class="item item-icon-left assertive" ng-click='showReason(consent.id)'>
+              <i class="icon ion-close" style="color:#7F2822"></i>
+              <p style="color:#7F2822">Revoke</p>
+            </div>
+          </div>
+        </div>
+        <div ng-show='consent.id == selectedConsent'>
+          <div class="row">
+            <div class="col">
+              <textarea name="reason" ng-model='consent.reason' placeholder="Reason for denial"></textarea>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <button class="button button-block button-outline" ng-click="denyAccess(consent)">Submit</button>
+            </div>
+          </div>
+        </div>
+      </div>
+  </ion-content>
+</ion-view>

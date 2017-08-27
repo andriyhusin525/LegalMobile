@@ -1,0 +1,29 @@
+<ion-view hide-back-button="false" align-title="center" cache-view="false">
+	<ion-nav-title>
+    	{{getTitle()}}
+  	</ion-nav-title>
+	<ion-content class="has-header">
+		<ion-list class='list legal-app-light list-inset ' >
+			
+			<ion-item ng-repeat="message in conversation" deal="deal" class='item' style="margin-bottom:10px;border-bottom:1px solid #eee">
+				<div>
+				    <span style="font-weight:bold">{{message.sender.first_name}}: <p style="font-weight:normal;white-space: normal;">{{message.body}}</p></span>
+				    <small style='font-size:12px' class="pull-right">{{moment(message.created_at).format('lll')}}</small>
+			    </div>
+			</ion-item>
+			
+		</ion-list>
+  	</ion-content>
+
+<ion-footer-bar style='height: 80px'>
+  <div class="col-90">
+			<label class="item-input-wrapper" style="padding: 0;margin: 0;">
+			  <input type="text" placeholder="message", ng-model='newMessage.body' style="border: 0;border-top: 0;padding: 15px;border-right: 1px solid #ddd;border-radius: 0;">
+			</label>
+		</div>
+		<div class="col-10" style="text-align: center;font-size: 40px;">
+			<i class="ion-ios-paperplane" ng-click='addMessage()' style="padding:15px"></i>
+		</div>
+</ion-footer-bar>
+
+</ion-view>

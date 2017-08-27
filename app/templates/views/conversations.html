@@ -1,0 +1,80 @@
+<ion-view hide-back-button="true" align-title="center">
+  <ion-nav-title>
+    Messages
+  </ion-nav-title>
+	<ion-nav-buttons side="left">
+    <button menu-toggle="left" class="button button-icon icon ion-android-menu flat"></button>
+  </ion-nav-buttons>
+  <ion-nav-buttons side="right">
+     <div class="button button-icon flat" ng-click='showNewConvoModal()' ng-show='ensureNonLegalFirmUser(user)'>
+       New
+     </div>
+  </ion-nav-buttons>
+  <ion-content class="has-header">
+  	<ion-list class='list legal-app-light list-inset'>
+  		<ion-item ng-repeat="(convoId, convo) in conversations" deal="deal" href="#/app/messages/{{convo.id}}" class='item' style="margin-bottom:10px;border-bottom:1px solid #eee">
+
+        <div class="row">
+          <div class="col">
+            <i class="ion-person-stalker"></i>
+            <span style="text-transform:capitalize" ng-repeat='user in convo.users'>
+              {{ user.first_name }} 
+            </span>
+          <i class='ion-ios-circle-filled pull-right' ng-show='convo.last_message.unread && (convo.last_message.sender_id != user.id)'></i>
+          </div>
+          <div class="col">
+            <small style="font-size: 16px" class="pull-right">{{moment(convo.last_message.created_at).format('lll')}}</small>
+          </div>  
+        </div>
+        <div class="row">
+          <div class="col">
+            <p class="ellepsie"><strong>{{convo.last_message.body}}</strong></p>  
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <p class='ellepsie' ng-show='convo.deal.street_name' style="color: #547A2A;font-weight:bold">  
+                <i class="ion-home"></i>
+                <strong>{{convo.deal.street_num}} {{convo.deal.street_name}}</strong>
+            </p>
+          </div>
+        </div>          
+  		</ion-item>
+      <ion-item class='item' style="margin-bottom:10px;border-bottom:1px solid #eee" ng-show='noConversations'>
+        <div>
+          <h2 class="legal-app-light text-center">You have no Conversations</h2>
+        </div>
+      </ion-item>
+  	</ion-list>
+  </ion-content>
+</ion-view>
+
+
+<script id="newConvo.html" type="text/ng-template">
+  <ion-modal-view>
+    <ion-header-bar>
+      <h1 class="title">Start a new Enquiry</h1>
+      <button class="button right" ng-click="closeModal()">
+        <i class="icon ion-close"></i>
+      </button>
+    </ion-header-bar>
+    <ion-content>
+      <label class="text-center">To: Abi Singam Law Professional Corporation</label>
+      <form name="newConvoForm" novalidate="novalidate">
+        <div class="padding">
+          <label>
+            <textarea id="message" name="firstName" type="text" placeholder="Message"
+                   ng-model="message.body" required="required">
+            </textarea>
+          </label>
+        </div>
+        <div class="padding">
+          <a class="item text-center social-btn-avionic" ui-sref-active="active"
+             ng-click="startNewConvo(message)">
+             Send
+          </a>
+        </div>
+      </form>
+    </ion-content>
+  </ion-modal-view>
+</script>
